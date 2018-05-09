@@ -1,0 +1,430 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1200</width>
+    <height>780</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <widget class="QWidget" name="centralWidget">
+   <widget class="QStackedWidget" name="stackedWidget">
+    <property name="enabled">
+     <bool>true</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>89</y>
+      <width>1200</width>
+      <height>650</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">/*整体允许的设置*/
+QCheckBox::indicator  {
+    width:26px;
+    height:26px;
+}
+
+QCheckBox::indicator:enabled:checked {
+        image: url(:/Resources/MainWindow/checkedHook.png);
+}
+QCheckBox::indicator:enabled:unchecked {
+        image: url(:/Resources/MainWindow/uncheckedHook.png);
+}
+
+QStackedWidget {
+	background:#FFFFFF;
+}
+
+QWidget {
+	background:#FFFFFF;
+}
+
+/*QScrollBar QSS*/
+QScrollBar:vertical{     
+	background:#FFFFFF; 
+	padding-top:20px;   
+	padding-bottom:20px; 
+	padding-left:3px;   
+	padding-right:3px;     
+	border-left:1px solid #d7d7d7;
+}
+QScrollBar::handle:vertical{
+	background:#dbdbdb;   
+	border-radius:6px;  
+	min-height:80px; 
+}   
+QScrollBar::handle:vertical:hover{
+	background:#d0d0d0;
+}  
+QScrollBar::add-line:vertical{
+	border-image:url(:/Resources/arrows.png) 0 24 0 12;
+}  
+QScrollBar::sub-line:vertical{
+	border-image:url(:/Resources/arrows.png) 0 36 0 0;
+}
+
+QScrollBar:horizontal{  
+	background:#FFFFFF;  
+	padding-top:3px;  
+	padding-bottom:3px;  
+	padding-left:20px;  
+	padding-right:20px;
+}  
+QScrollBar::handle:horizontal{  
+	background:#dbdbdb;  
+	border-radius:6px;  
+	min-width:80px;
+}  
+QScrollBar::handle:horizontal:hover{  
+	background:#d0d0d0;
+} 
+QScrollBar::add-line:horizontal{
+	border-image:url(:/Resources/arrows.png) 0 0 0 36;
+}  
+QScrollBar::sub-line:horizontal{
+	border-image:url(:/Resources/arrows.png) 0 12 0 24;
+}
+
+
+/*第一层界面设置*/
+QTableView{  
+        color: rgb(0, 0, 0);  
+		border: none;
+		/*border: 1px outset solid #C07010;
+        border: none;
+        gridline-color: rgb(155,144,194); */
+        /*background-color: rgb(20, 20, 20); 
+        alternate-background-color: rgb(145, 152, 159); 
+        selection-background-color: rgb(130, 190, 100);*/
+}  
+   
+
+
+QPushButton#pushButton_LastPage {
+	width:25px; height:20px;
+}
+QPushButton#pushButton_GoPage {
+	width:25px; height:20px;
+}
+QPushButton#pushButton_NextPage {
+	width:25px; height:20px;
+}
+QPushButton#pushButton_OK {
+	width:84px; height:20px;
+}
+
+
+QStackedWidget QTableView::item:!alternate:!selected{  
+       /* background-color: rgb(220, 220, 220);   */
+}  
+
+/*按理应该再加上:horizontal ，但是借出错隐藏veritical header*/
+QStackedWidget QHeaderView::section{  
+        background-color:rgb(155,144,194);
+        padding-left: 4px;  
+        border: 1px thin solid rgb(0,0,0);  
+        min-height: 30px;  
+}  
+
+
+QMenu::item:hover{background:lightblue;}</string>
+    </property>
+    <property name="currentIndex">
+     <number>0</number>
+    </property>
+    <widget class="StackedScheduleWidget" name="page0"/>
+    <widget class="StackedGradesWidget" name="page1"/>
+    <widget class="StackedPlanCoursesWidget" name="page2"/>
+    <widget class="StackedEvaluationWidget" name="page3"/>
+    <widget class="StackedSelectClassWidget" name="page4"/>
+    <widget class="StackedExamRelatedWidget" name="page5"/>
+   </widget>
+   <widget class="QWidget" name="title_widget" native="true">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>0</y>
+      <width>1201</width>
+      <height>90</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true"/>
+    </property>
+    <widget class="QWidget" name="layoutWidget">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>1</y>
+       <width>1201</width>
+       <height>32</height>
+      </rect>
+     </property>
+     <layout class="QHBoxLayout" name="horizontalLayout">
+      <property name="spacing">
+       <number>0</number>
+      </property>
+      <property name="rightMargin">
+       <number>0</number>
+      </property>
+      <property name="bottomMargin">
+       <number>0</number>
+      </property>
+      <item>
+       <spacer name="horizontalSpacer">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
+       <widget class="QPushButton" name="pushButton_minimize">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>30</width>
+          <height>30</height>
+         </size>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">QPushButton#pushButton_minimize
+{
+    border-image:url(:/Resources/minback.png) 0 60 0 0 ;
+}
+
+QPushButton#pushButton_minimize:hover
+{
+    border-image:url(:/Resources/minback.png) 0 30 0 30 ;
+}
+
+QPushButton#pushButton_minimize:pressed
+{
+    border-image:url(:/Resources/minback.png) 0 0 0 60 ;
+}</string>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="pushButton_close">
+        <property name="minimumSize">
+         <size>
+          <width>30</width>
+          <height>30</height>
+         </size>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">QPushButton#pushButton_close
+{
+    border-image:url(:/Resources/closeback.png) 0 60 0 0 ;
+}
+
+QPushButton#pushButton_close:hover
+{
+    border-image:url(:/Resources/closeback.png) 0 30 0 30 ;
+}
+
+QPushButton#pushButton_close:pressed
+{
+    border-image:url(:/Resources/closeback.png) 0 0 0 60 ;
+}</string>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+    <widget class="QPushButton" name="stackButton1">
+     <property name="geometry">
+      <rect>
+       <x>200</x>
+       <y>20</y>
+       <width>55</width>
+       <height>55</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">QPushButton#stackButton1{
+	border-image:url(:/Resources/MainWindow/score.png);
+}</string>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="stackButton5">
+     <property name="geometry">
+      <rect>
+       <x>920</x>
+       <y>20</y>
+       <width>55</width>
+       <height>55</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">QPushButton#stackButton5{
+	border-image:url(:/Resources/MainWindow/exam.png);
+}</string>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="stackButton4">
+     <property name="geometry">
+      <rect>
+       <x>740</x>
+       <y>20</y>
+       <width>55</width>
+       <height>55</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">QPushButton#stackButton4{
+	border-image:url(:/Resources/MainWindow/choose.png);
+}</string>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="stackButton0">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>20</y>
+       <width>55</width>
+       <height>55</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">QPushButton#stackButton0{
+	border-image:url(:/Resources/MainWindow/classSchedule.png);
+}</string>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="stackButton3">
+     <property name="geometry">
+      <rect>
+       <x>560</x>
+       <y>20</y>
+       <width>55</width>
+       <height>55</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">QPushButton#stackButton3{
+	border-image:url(:/Resources/MainWindow/evaluate.png);
+}</string>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="stackButton2">
+     <property name="geometry">
+      <rect>
+       <x>380</x>
+       <y>20</y>
+       <width>55</width>
+       <height>55</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">QPushButton#stackButton2{
+	border-image:url(:/Resources/MainWindow/program.png);
+}</string>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
+   </widget>
+  </widget>
+ </widget>
+ <layoutdefault spacing="6" margin="11"/>
+ <customwidgets>
+  <customwidget>
+   <class>StackedExamRelatedWidget</class>
+   <extends>QWidget</extends>
+   <header>Sources/Widgets/StackedExamRelatedWidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>StackedSelectClassWidget</class>
+   <extends>QWidget</extends>
+   <header>Sources/Widgets/StackedSelectClassWidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>StackedGradesWidget</class>
+   <extends>QWidget</extends>
+   <header>Sources/Widgets/StackedGradesWidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>StackedEvaluationWidget</class>
+   <extends>QWidget</extends>
+   <header>Sources/Widgets/StackedEvaluationWidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>StackedPlanCoursesWidget</class>
+   <extends>QWidget</extends>
+   <header>Sources/Widgets/StackedPlanCoursesWidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>StackedScheduleWidget</class>
+   <extends>QWidget</extends>
+   <header>Sources/Widgets/StackedScheduleWidget.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>pushButton_close</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>hide()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>1199</x>
+     <y>31</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>1212</x>
+     <y>130</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

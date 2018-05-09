@@ -1,0 +1,443 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>LoginWindow</class>
+ <widget class="QDialog" name="LoginWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>417</width>
+    <height>311</height>
+   </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="windowTitle">
+   <string>Login</string>
+  </property>
+  <property name="windowIcon">
+   <iconset>
+    <normaloff>icon.ico</normaloff>icon.ico</iconset>
+  </property>
+  <property name="whatsThis">
+   <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;这是Battery给自己制作的专用jwc小刀&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">#LoginWindow {
+	image: url(:/Resources/LoginWindow/login_title.png);
+	image-position:TOP;
+}</string>
+  </property>
+  <widget class="QWidget" name="layoutWidget">
+   <property name="geometry">
+    <rect>
+     <x>-10</x>
+     <y>0</y>
+     <width>421</width>
+     <height>32</height>
+    </rect>
+   </property>
+   <layout class="QHBoxLayout" name="horizontalLayout">
+    <property name="spacing">
+     <number>0</number>
+    </property>
+    <property name="rightMargin">
+     <number>0</number>
+    </property>
+    <property name="bottomMargin">
+     <number>0</number>
+    </property>
+    <item>
+     <spacer name="horizontalSpacer">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>40</width>
+        <height>20</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+    <item>
+     <widget class="QPushButton" name="pushButton_minimize">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>30</width>
+        <height>30</height>
+       </size>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QPushButton#pushButton_minimize
+{
+    border-image:url(:/Resources/minback.png) 0 60 0 0 ;
+}
+
+QPushButton#pushButton_minimize:hover
+{
+    border-image:url(:/Resources/minback.png) 0 30 0 30 ;
+}
+
+QPushButton#pushButton_minimize:pressed
+{
+    border-image:url(:/Resources/minback.png) 0 0 0 60 ;
+}</string>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QPushButton" name="pushButton_close">
+      <property name="minimumSize">
+       <size>
+        <width>30</width>
+        <height>30</height>
+       </size>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QPushButton#pushButton_close
+{
+    border-image:url(:/Resources/closeback.png) 0 60 0 0 ;
+}
+
+QPushButton#pushButton_close:hover
+{
+    border-image:url(:/Resources/closeback.png) 0 30 0 30 ;
+}
+
+QPushButton#pushButton_close:pressed
+{
+    border-image:url(:/Resources/closeback.png) 0 0 0 60 ;
+}</string>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QComboBox" name="comboBox_username">
+   <property name="geometry">
+    <rect>
+     <x>110</x>
+     <y>160</y>
+     <width>194</width>
+     <height>30</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QComboBox
+{
+	font: 11pt &quot;等线&quot;;
+    background:white;
+    padding-left:5px ;
+    border-top-left-radius:3px;
+    border-top-right-radius:3px;
+    border: 1px solid rgb(209 , 209 , 209);
+}
+QComboBox:hover
+{
+    border: 1px solid rgb(21 , 131 , 221);
+}
+
+QComboBox::down-arrow
+{
+    border-image:url(:/Resources/drop_down_Button.png) 0 36 0 0 ;
+}
+QComboBox::down-arrow:hover
+{
+    border-image:url(:/Resources/drop_down_Button.png) 0 18 0 18 ;
+}
+QComboBox::down-arrow:on
+{
+    border-image:url(:/Resources/drop_down_Button.png) 0 0 0 36 ;
+}
+QComboBox::drop-down
+{
+    width:20px;
+    background:transparent;
+    padding-right:5px;
+}
+
+QListView {
+	margin:3px;
+}
+
+QListWidget QPushButton{
+	background:transparent;
+	border-image:url(:/Resources/delete_username.png) 0 30 0 0 ;
+	width:15px;height:15px;
+}
+
+QListWidget QPushButton:hover{
+	border-image:url(:/Resources/delete_username.png) 0 15 0 15 ;
+}
+
+QListWidget QPushButton:pressed{
+	border-image:url(:/Resources/delete_username.png) 0 0 0 30;
+}
+
+QComboBox QAbstractItemView::item
+{
+	background:transparent;
+    height:30px;
+}
+
+QComboBox QAbstractItemView::item:hover
+{
+    background:rgb(21 , 131 , 221);
+}</string>
+   </property>
+   <property name="currentText">
+    <string/>
+   </property>
+   <property name="iconSize">
+    <size>
+     <width>16</width>
+     <height>16</height>
+    </size>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="lineEdit_password">
+   <property name="geometry">
+    <rect>
+     <x>110</x>
+     <y>190</y>
+     <width>194</width>
+     <height>30</height>
+    </rect>
+   </property>
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
+   <property name="minimumSize">
+    <size>
+     <width>0</width>
+     <height>25</height>
+    </size>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QLineEdit#lineEdit_password
+{
+	font: 11pt &quot;黑体&quot;;
+    background:white;
+    padding-left:5px ;
+    padding-top:1px ;
+    border-bottom-left-radius:3px;
+    border-bottom-right-radius:3px;
+    border: 1px solid rgb(209 , 209 , 209);
+    border-top:transparent;
+}
+QLineEdit#lineEdit_password:hover
+{
+	font: 11pt &quot;黑体&quot;;
+    padding-top:0px ;
+    border: 1px solid rgb(21 , 131 , 221);
+}</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="echoMode">
+    <enum>QLineEdit::Password</enum>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+   </property>
+   <property name="placeholderText">
+    <string>密码</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="pushButton_login">
+   <property name="geometry">
+    <rect>
+     <x>110</x>
+     <y>270</y>
+     <width>194</width>
+     <height>30</height>
+    </rect>
+   </property>
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
+   <property name="minimumSize">
+    <size>
+     <width>0</width>
+     <height>25</height>
+    </size>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QPushButton#pushButton_login
+{
+    color:white;
+    background-color:rgb(9 , 163 , 220);
+    border-radius:5px;
+}
+
+QPushButton#pushButton_login:hover
+{
+    color:white;
+    background-color:rgb(13 , 184, 242);
+}
+
+QPushButton#pushButton_login:pressed
+{
+    color:white;
+    background-color:rgb(14 , 135 , 228);
+    padding-left:3px;
+    padding-top:3px;
+}</string>
+   </property>
+   <property name="text">
+    <string>登  录</string>
+   </property>
+  </widget>
+  <widget class="QComboBox" name="comboBox_semester">
+   <property name="geometry">
+    <rect>
+     <x>110</x>
+     <y>220</y>
+     <width>194</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QComboBox
+{
+	font: 11pt &quot;等线&quot;;
+    background:white;
+    padding-left:5px ;
+    border-top-left-radius:3px;
+    border-top-right-radius:3px;
+    border: 1px solid rgb(209 , 209 , 209);
+}
+QComboBox:hover
+{
+    border: 1px solid rgb(21 , 131 , 221);
+}
+
+QComboBox::down-arrow
+{
+    border-image:url(:/Resources/drop_down_Button.png) 0 36 0 0 ;
+}
+QComboBox::down-arrow:hover
+{
+    border-image:url(:/Resources/drop_down_Button.png) 0 18 0 18 ;
+}
+QComboBox::down-arrow:on
+{
+    border-image:url(:/Resources/drop_down_Button.png) 0 0 0 36 ;
+}
+QComboBox::drop-down
+{
+    width:20px;
+    background:transparent;
+    padding-right:5px;
+}
+
+QListView {
+	margin:3px;
+}
+
+QListWidget QPushButton{
+	background:transparent;
+	border-image:url(:/Resources/delete_username.png) 0 30 0 0 ;
+	width:15px;height:15px;
+}
+
+QListWidget QPushButton:hover{
+	border-image:url(:/Resources/delete_username.png) 0 15 0 15 ;
+}
+
+QListWidget QPushButton:pressed{
+	border-image:url(:/Resources/delete_username.png) 0 0 0 30;
+}
+
+QComboBox QAbstractItemView::item
+{
+	background:transparent;
+    height:30px;
+}
+
+QComboBox QAbstractItemView::item:hover
+{
+    background:rgb(21 , 131 , 221);
+}</string>
+   </property>
+   <property name="currentText">
+    <string/>
+   </property>
+   <property name="iconSize">
+    <size>
+     <width>16</width>
+     <height>16</height>
+    </size>
+   </property>
+  </widget>
+ </widget>
+ <tabstops>
+  <tabstop>comboBox_username</tabstop>
+  <tabstop>lineEdit_password</tabstop>
+  <tabstop>pushButton_login</tabstop>
+  <tabstop>pushButton_minimize</tabstop>
+  <tabstop>pushButton_close</tabstop>
+ </tabstops>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>pushButton_minimize</sender>
+   <signal>clicked()</signal>
+   <receiver>LoginWindow</receiver>
+   <slot>showMinimized()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>369</x>
+     <y>13</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>51</x>
+     <y>117</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton_close</sender>
+   <signal>clicked()</signal>
+   <receiver>LoginWindow</receiver>
+   <slot>hide()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>387</x>
+     <y>16</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>388</x>
+     <y>114</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>exit()</slot>
+ </slots>
+</ui>

@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>StackedExamRelatedWidget</class>
+ <widget class="QWidget" name="StackedExamRelatedWidget">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1200</width>
+    <height>650</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <widget class="TitleWidget" name="widget_title" native="true">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>1200</width>
+     <height>60</height>
+    </rect>
+   </property>
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
+  </widget>
+  <widget class="QStackedWidget" name="stackedWidget">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>60</y>
+     <width>1201</width>
+     <height>591</height>
+    </rect>
+   </property>
+   <widget class="QWidget" name="page0">
+    <widget class="QTableView" name="tableView">
+     <property name="geometry">
+      <rect>
+       <x>100</x>
+       <y>100</y>
+       <width>1000</width>
+       <height>350</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="pushButton_flush">
+     <property name="geometry">
+      <rect>
+       <x>1140</x>
+       <y>550</y>
+       <width>30</width>
+       <height>30</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">QPushButton{
+	border-image:url(:/Resources/MainWindow/flush.jpg);
+}</string>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_flush">
+     <property name="geometry">
+      <rect>
+       <x>1140</x>
+       <y>530</y>
+       <width>50</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="frameShape">
+      <enum>QFrame::NoFrame</enum>
+     </property>
+     <property name="text">
+      <string>刷新</string>
+     </property>
+    </widget>
+   </widget>
+   <widget class="QWidget" name="page1">
+    <widget class="QTextBrowser" name="textBrowser">
+     <property name="geometry">
+      <rect>
+       <x>300</x>
+       <y>190</y>
+       <width>600</width>
+       <height>361</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="lineEdit">
+     <property name="geometry">
+      <rect>
+       <x>175</x>
+       <y>110</y>
+       <width>850</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">QLineEdit {
+    border: 1px solid ; 
+    border-radius: 10px; 
+    background: white;  
+	selection-background-color: rgb(100, 100, 100);
+    font-size: 22px ;  
+}</string>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+     <property name="placeholderText">
+      <string>请输入一部分连续的题目</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label">
+     <property name="geometry">
+      <rect>
+       <x>820</x>
+       <y>560</y>
+       <width>81</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>共0条结果</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+   </widget>
+  </widget>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>TitleWidget</class>
+   <extends>QWidget</extends>
+   <header>Sources/Widgets/TitleWidget.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>

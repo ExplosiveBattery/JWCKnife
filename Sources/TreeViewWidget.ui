@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>TreeViewWidget</class>
+ <widget class="QWidget" name="TreeViewWidget">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>670</width>
+    <height>400</height>
+   </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="windowTitle">
+   <string>方案课程</string>
+  </property>
+  <property name="windowIcon">
+   <iconset resource="../images.qrc">
+    <normaloff>:/Resources/MainWindow/emoji_yawn.png</normaloff>:/Resources/MainWindow/emoji_yawn.png</iconset>
+  </property>
+  <widget class="QTreeView" name="treeView">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>670</width>
+     <height>400</height>
+    </rect>
+   </property>
+  </widget>
+ </widget>
+ <resources>
+  <include location="../images.qrc"/>
+ </resources>
+ <connections/>
+</ui>

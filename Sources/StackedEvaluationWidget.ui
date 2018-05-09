@@ -1,0 +1,783 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>StackedEvaluationWidget</class>
+ <widget class="QWidget" name="StackedEvaluationWidget">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1200</width>
+    <height>650</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <widget class="QLabel" name="label_flush">
+   <property name="geometry">
+    <rect>
+     <x>1140</x>
+     <y>590</y>
+     <width>50</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="frameShape">
+    <enum>QFrame::NoFrame</enum>
+   </property>
+   <property name="text">
+    <string>刷新</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="pushButton_flush">
+   <property name="geometry">
+    <rect>
+     <x>1140</x>
+     <y>610</y>
+     <width>30</width>
+     <height>30</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QPushButton{
+	border-image:url(:/Resources/MainWindow/flush.jpg);
+}</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+  </widget>
+  <widget class="QRadioButton" name="radioButton_teacher">
+   <property name="geometry">
+    <rect>
+     <x>1090</x>
+     <y>30</y>
+     <width>89</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>评老师</string>
+   </property>
+   <attribute name="buttonGroup">
+    <string notr="true">buttonGroup</string>
+   </attribute>
+  </widget>
+  <widget class="QRadioButton" name="radioButton_assistant">
+   <property name="geometry">
+    <rect>
+     <x>1090</x>
+     <y>60</y>
+     <width>89</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>评助教</string>
+   </property>
+   <attribute name="buttonGroup">
+    <string notr="true">buttonGroup</string>
+   </attribute>
+  </widget>
+  <widget class="QRadioButton" name="radioButton_small_semester">
+   <property name="geometry">
+    <rect>
+     <x>1090</x>
+     <y>90</y>
+     <width>101</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>评小学期课程</string>
+   </property>
+   <attribute name="buttonGroup">
+    <string notr="true">buttonGroup</string>
+   </attribute>
+  </widget>
+  <widget class="QStackedWidget" name="stackedWidget">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>1071</width>
+     <height>650</height>
+    </rect>
+   </property>
+   <property name="currentIndex">
+    <number>0</number>
+   </property>
+   <widget class="QWidget" name="page_1">
+    <widget class="QTableView" name="tableView_evaluation">
+     <property name="geometry">
+      <rect>
+       <x>80</x>
+       <y>60</y>
+       <width>367</width>
+       <height>550</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QGroupBox" name="groupBox">
+     <property name="geometry">
+      <rect>
+       <x>550</x>
+       <y>60</y>
+       <width>511</width>
+       <height>550</height>
+      </rect>
+     </property>
+     <property name="title">
+      <string>当前评教内容</string>
+     </property>
+     <widget class="QPushButton" name="pushButton_reset">
+      <property name="geometry">
+       <rect>
+        <x>410</x>
+        <y>510</y>
+        <width>75</width>
+        <height>23</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QPushButton {
+border: 2px solid ; 
+border-radius: 8px; 
+border-color:rgb(100,190,245);
+
+font:  9pt;
+color:rgb(100,190,245);
+}
+
+
+QPushButton:hover {
+border: 2px solid ; 
+border-radius: 8px; 
+border-color:rgb(100,190,245);
+background-color:rgb(200 , 250 , 250);
+
+font:  9pt;
+color:rgb(100,190,245);
+}
+
+
+QPushButton:pressed {
+border: 2px solid ; 
+border-radius: 8px; 
+border-color:rgb(100,190,245);
+background-color:rgb(200 , 250 , 250);
+
+font:  9pt;
+color:rgb(100,190,245);
+padding-left:5px;
+padding-top:3px;
+}
+</string>
+      </property>
+      <property name="text">
+       <string>恢复默认</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pushButton_send">
+      <property name="geometry">
+       <rect>
+        <x>300</x>
+        <y>510</y>
+        <width>75</width>
+        <height>23</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QPushButton {
+border: 2px solid ; 
+border-radius: 8px; 
+border-color:rgb(100,190,245);
+
+font:  10pt;
+color:rgb(100,190,245);
+}
+
+
+QPushButton:hover {
+border: 2px solid ; 
+border-radius: 8px; 
+border-color:rgb(100,190,245);
+background-color:rgb(200 , 250 , 250);
+
+font:  10pt;
+color:rgb(100,190,245);
+}
+
+
+QPushButton:pressed {
+border: 2px solid ; 
+border-radius: 8px; 
+border-color:rgb(100,190,245);
+background-color:rgb(200 , 250 , 250);
+
+font:  10pt;
+color:rgb(100,190,245);
+padding-left:5px;
+padding-top:3px;
+}
+</string>
+      </property>
+      <property name="text">
+       <string>发送</string>
+      </property>
+     </widget>
+     <widget class="QWidget" name="gridLayoutWidget">
+      <property name="geometry">
+       <rect>
+        <x>20</x>
+        <y>20</y>
+        <width>471</width>
+        <height>481</height>
+       </rect>
+      </property>
+      <layout class="QGridLayout" name="gridLayout">
+       <item row="13" column="4">
+        <widget class="QRadioButton" name="radioButton_q7_5">
+         <property name="text">
+          <string>很不符合</string>
+         </property>
+         <attribute name="buttonGroup">
+          <string notr="true">buttonGroup_7</string>
+         </attribute>
+        </widget>
+       </item>
+       <item row="13" column="3">
+        <widget class="QRadioButton" name="radioButton_q7_4">
+         <property name="text">
+          <string>不符合</string>
+         </property>
+         <attribute name="buttonGroup">
+          <string notr="true">buttonGroup_7</string>
+         </attribute>
+        </widget>
+       </item>
+       <item row="13" column="1">
+        <widget class="QRadioButton" name="radioButton_q7_2">
+         <property name="text">
+          <string>较符合</string>
+         </property>
+         <attribute name="buttonGroup">
+          <string notr="true">buttonGroup_7</string>
+         </attribute>
+        </widget>
+       </item>
+       <item row="13" column="2">
+        <widget class="QRadioButton" name="radioButton_q7_3">
+         <property name="text">
+          <string>一般</string>
+         </property>
+         <attribute name="buttonGroup">
+          <string notr="true">buttonGroup_7</string>
+         </attribute>
+        </widget>
+       </item>
+       <item row="12" column="0" colspan="5">
+        <widget class="QLabel" name="label_question7">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>30</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>问题7：该门课程的总体授课效果令我很满意。</string>
+         </property>
+        </widget>
+       </item>
+       <item row="13" column="0">
+        <widget class="QRadioButton" name="radioButton_q7_1">
+         <property name="text">
+          <string>非常符合</string>
+         </property>
+         <attribute name="buttonGroup">
+          <string notr="true">buttonGroup_7</string>
+         </attribute>
+        </widget>
+       </item>
+       <item row="11" column="3">
+        <widget class="QRadioButton" name="radioButton_q6_4">
+         <property name="text">
+          <string>不符合</string>
+         </property>
+         <attribute name="buttonGroup">
+          <string notr="true">buttonGroup_6</string>
+         </attribute>
+        </widget>
+       </item>
+       <item row="3" column="2">
+        <widget class="QRadioButton" name="radioButton_q2_3">
+         <property name="text">
+          <string>一般</string>
+         </property>
+         <attribute name="buttonGroup">
+          <string notr="true">buttonGroup_2</string>
+         </attribute>
+        </widget>
+       </item>
+       <item row="10" column="0" colspan="5">
+        <widget class="QLabel" name="label_question6">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>30</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>问题6：我认为，该门课程选用了具有思想性、科学性、时代性等特点的优质教材。</string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="3">
+        <widget class="QRadioButton" name="radioButton_q2_4">
+         <property name="text">
+          <string>不符合</string>
+         </property>
+         <attribute name="buttonGroup">
+          <string notr="true">buttonGroup_2</string>
+         </attribute>
+        </widget>
+       </item>
+       <item row="2" column="0" colspan="5">
+        <widget class="QLabel" name="label_question2">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>30</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>问题2：该课程的教学很好地激发了我的学习兴趣并调动了我的学习积极性，我在该课程
+学习中付出了最大努力。</string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="0">
+        <widget class="QRadioButton" name="radioButton_q2_1">
+         <property name="text">
+          <string>非常符合</string>
+         </property>
+         <attribute name="buttonGroup">
+          <string notr="true">buttonGroup_2</string>
+         </attribute>
+        </widget>
+       </item>
+       <item row="18" column="0" colspan="5">
+        <widget class="QTextEdit" name="textEdit">
+         <property name="styleSheet">
+          <string notr="true">font: 12pt &quot;Arial&quot;;</string>
+         </property>
+         <property name="html">
+          <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Arial'; font-size:12pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;A good teacher.一个好老师。&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
+        </widget>
+       </item>
+       <item row="6" column="0" colspan="5">
+        <widget class="QLabel" name="label_question4">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>30</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>问题4：老师精心设计课程的成绩评定办法和过程考核环节，激励我在整个学期中都努力
+学习。</string>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="2">
+        <widget class="QRadioButton" name="radioButton_q3_3">
+         <property name="text">
+          <string>一般</string>
+         </property>
+         <attribute name="buttonGroup">
+          <string notr="true">buttonGroup_3</string>
+         </attribute>
+        </widget>
+       </item>
+       <item row="7" column="3">
+        <widget class="QRadioButton" name="radioButton_q4_4">
+         <property name="text">
+          <string>不符合</string>
+         </property>
+         <attribute name="buttonGroup">
+          <string notr="true">buttonGroup_4</string>
+         </attribute>
+        </widget>
+       </item>
+       <item row="5" column="3">
+        <widget class="QRadioButton" name="radioButton_q3_4">
+         <property name="text">
+          <string>不符合</string>
+         </property>
+         <attribute name="buttonGroup">
+          <string notr="true">buttonGroup_3</string>
+         </attribute>
+        </widget>
+       </item>
+       <item row="7" column="2">
+        <widget class="QRadioButton" name="radioButton_q4_3">
+         <property name="text">
+          <string>一般</string>
+         </property>
+         <attribute name="buttonGroup">
+          <string notr="true">buttonGroup_4</string>
+         </attribute>
+        </widget>
+       </item>
+       <item row="7" column="0">
+        <widget class="QRadioButton" name="radioButton_q4_1">
+         <property name="text">
+          <string>非常符合</string>
+         </property>
+         <attribute name="buttonGroup">
+          <string notr="true">buttonGroup_4</string>
+         </attribute>
+        </widget>
+       </item>
+       <item row="5" column="1">
+        <widget class="QRadioButton" name="radioButton_q3_2">
+         <property name="text">
+          <string>较符合</string>
+         </property>
+         <attribute name="buttonGroup">
+          <string notr="true">buttonGroup_3</string>
+         </attribute>
+        </widget>
+       </item>
+       <item row="9" column="0">
+        <widget class="QRadioButton" name="radioButton_q5_1">
+         <property name="text">
+          <string>非常符合</string>
+         </property>
+         <attribute name="buttonGroup">
+          <string notr="true">buttonGroup_5</string>
+         </attribute>
+        </widget>
+       </item>
+       <item row="4" column="0" colspan="5">
+        <widget class="QLabel" name="label_question3">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>30</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>问题3：老师为我提供的学习资源以及引导我们自主寻找的学习资源，对我的学习帮助很
+大。</string>
+         </property>
+        </widget>
+       </item>
+       <item row="9" column="1">
+        <widget class="QRadioButton" name="radioButton_q5_2">
+         <property name="text">
+          <string>较符合</string>
+         </property>
+         <attribute name="buttonGroup">
+          <string notr="true">buttonGroup_5</string>
+         </attribute>
+        </widget>
+       </item>
+       <item row="5" column="0">
+        <widget class="QRadioButton" name="radioButton_q3_1">
+         <property name="text">
+          <string>非常符合</string>
+         </property>
+         <attribute name="buttonGroup">
+          <string notr="true">buttonGroup_3</string>
+         </attribute>
+        </widget>
+       </item>
+       <item row="11" column="0">
+        <widget class="QRadioButton" name="radioButton_q6_1">
+         <property name="text">
+          <string>非常符合</string>
+         </property>
+         <attribute name="buttonGroup">
+          <string notr="true">buttonGroup_6</string>
+         </attribute>
+        </widget>
+       </item>
+       <item row="8" column="0" colspan="5">
+        <widget class="QLabel" name="label_question5">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>30</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>问题5：作业和考试后，老师针对我的学习情况给予了及时且有价值的反馈，这些反馈可
+以很好的帮助我了解如何改进学习。</string>
+         </property>
+        </widget>
+       </item>
+       <item row="9" column="2">
+        <widget class="QRadioButton" name="radioButton_q5_3">
+         <property name="text">
+          <string>一般</string>
+         </property>
+         <attribute name="buttonGroup">
+          <string notr="true">buttonGroup_5</string>
+         </attribute>
+        </widget>
+       </item>
+       <item row="9" column="3">
+        <widget class="QRadioButton" name="radioButton_q5_4">
+         <property name="text">
+          <string>不符合</string>
+         </property>
+         <attribute name="buttonGroup">
+          <string notr="true">buttonGroup_5</string>
+         </attribute>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QRadioButton" name="radioButton_q1_2">
+         <property name="text">
+          <string>较符合</string>
+         </property>
+         <attribute name="buttonGroup">
+          <string notr="true">buttonGroup_1</string>
+         </attribute>
+        </widget>
+       </item>
+       <item row="1" column="2">
+        <widget class="QRadioButton" name="radioButton_q1_3">
+         <property name="text">
+          <string>一般</string>
+         </property>
+         <attribute name="buttonGroup">
+          <string notr="true">buttonGroup_1</string>
+         </attribute>
+        </widget>
+       </item>
+       <item row="11" column="2">
+        <widget class="QRadioButton" name="radioButton_q6_3">
+         <property name="text">
+          <string>一般</string>
+         </property>
+         <attribute name="buttonGroup">
+          <string notr="true">buttonGroup_6</string>
+         </attribute>
+        </widget>
+       </item>
+       <item row="1" column="3">
+        <widget class="QRadioButton" name="radioButton_q1_4">
+         <property name="text">
+          <string>不符合</string>
+         </property>
+         <attribute name="buttonGroup">
+          <string notr="true">buttonGroup_1</string>
+         </attribute>
+        </widget>
+       </item>
+       <item row="11" column="1">
+        <widget class="QRadioButton" name="radioButton_q6_2">
+         <property name="text">
+          <string>较符合</string>
+         </property>
+         <attribute name="buttonGroup">
+          <string notr="true">buttonGroup_6</string>
+         </attribute>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QRadioButton" name="radioButton_q1_1">
+         <property name="text">
+          <string>非常符合</string>
+         </property>
+         <attribute name="buttonGroup">
+          <string notr="true">buttonGroup_1</string>
+         </attribute>
+        </widget>
+       </item>
+       <item row="3" column="4">
+        <widget class="QRadioButton" name="radioButton_q2_5">
+         <property name="text">
+          <string>很不符合</string>
+         </property>
+         <attribute name="buttonGroup">
+          <string notr="true">buttonGroup_2</string>
+         </attribute>
+        </widget>
+       </item>
+       <item row="7" column="4">
+        <widget class="QRadioButton" name="radioButton_q4_5">
+         <property name="text">
+          <string>很不符合</string>
+         </property>
+         <attribute name="buttonGroup">
+          <string notr="true">buttonGroup_4</string>
+         </attribute>
+        </widget>
+       </item>
+       <item row="5" column="4">
+        <widget class="QRadioButton" name="radioButton_q3_5">
+         <property name="text">
+          <string>很不符合</string>
+         </property>
+         <attribute name="buttonGroup">
+          <string notr="true">buttonGroup_3</string>
+         </attribute>
+        </widget>
+       </item>
+       <item row="11" column="4">
+        <widget class="QRadioButton" name="radioButton_q6_5">
+         <property name="text">
+          <string>很不符合</string>
+         </property>
+         <attribute name="buttonGroup">
+          <string notr="true">buttonGroup_6</string>
+         </attribute>
+        </widget>
+       </item>
+       <item row="1" column="4">
+        <widget class="QRadioButton" name="radioButton_q1_5">
+         <property name="text">
+          <string>很不符合</string>
+         </property>
+         <attribute name="buttonGroup">
+          <string notr="true">buttonGroup_1</string>
+         </attribute>
+        </widget>
+       </item>
+       <item row="9" column="4">
+        <widget class="QRadioButton" name="radioButton_q5_5">
+         <property name="text">
+          <string>很不符合</string>
+         </property>
+         <attribute name="buttonGroup">
+          <string notr="true">buttonGroup_5</string>
+         </attribute>
+        </widget>
+       </item>
+       <item row="0" column="0" colspan="5">
+        <widget class="QLabel" name="label_question1">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>30</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>问题1：老师热爱教学，用心经营教学，对所授课程有明确的目标，在教学活动中，充满
+爱心，言传身教，立德树人，传递正能量。</string>
+         </property>
+        </widget>
+       </item>
+       <item row="7" column="1">
+        <widget class="QRadioButton" name="radioButton_q4_2">
+         <property name="text">
+          <string>较符合</string>
+         </property>
+         <attribute name="buttonGroup">
+          <string notr="true">buttonGroup_4</string>
+         </attribute>
+        </widget>
+       </item>
+       <item row="3" column="1">
+        <widget class="QRadioButton" name="radioButton_q2_2">
+         <property name="text">
+          <string>较符合</string>
+         </property>
+         <attribute name="buttonGroup">
+          <string notr="true">buttonGroup_2</string>
+         </attribute>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </widget>
+   </widget>
+   <widget class="QWidget" name="page_2">
+    <widget class="QLabel" name="label_physics_infomation">
+     <property name="geometry">
+      <rect>
+       <x>90</x>
+       <y>200</y>
+       <width>851</width>
+       <height>221</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">QLabel {
+    border: 1px solid ; 
+    border-radius: 12px; 
+}</string>
+     </property>
+     <property name="text">
+      <string>针对小学期的功能需要调整，暂时还没做，切记先手动将小学期的课程评教，否则会出现“神奇”的事情。</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_warning">
+     <property name="geometry">
+      <rect>
+       <x>110</x>
+       <y>210</y>
+       <width>51</width>
+       <height>51</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">QLabel {
+	border-image: url(:/Resources/MainWindow/warning.png);
+}</string>
+     </property>
+     <property name="lineWidth">
+      <number>0</number>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+     <property name="margin">
+      <number>0</number>
+     </property>
+     <property name="indent">
+      <number>0</number>
+     </property>
+    </widget>
+   </widget>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+ <buttongroups>
+  <buttongroup name="buttonGroup_2"/>
+  <buttongroup name="buttonGroup"/>
+  <buttongroup name="buttonGroup_7"/>
+  <buttongroup name="buttonGroup_4"/>
+  <buttongroup name="buttonGroup_5"/>
+  <buttongroup name="buttonGroup_1"/>
+  <buttongroup name="buttonGroup_3"/>
+  <buttongroup name="buttonGroup_6"/>
+ </buttongroups>
+</ui>

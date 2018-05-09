@@ -1,0 +1,38 @@
+<RCC>
+    <qresource prefix="/">
+        <file>Resources/closeback.png</file>
+        <file>Resources/minback.png</file>
+        <file>Resources/delete_username.png</file>
+        <file>Resources/battery.ico</file>
+        <file>Resources/drop_down_Button.png</file>
+        <file>Resources/LoginWindow/login_title.png</file>
+        <file>Resources/MainWindow/choose.png</file>
+        <file>Resources/MainWindow/classSchedule.png</file>
+        <file>Resources/MainWindow/evaluate.png</file>
+        <file>Resources/MainWindow/exam.png</file>
+        <file>Resources/MainWindow/score.png</file>
+        <file>Resources/MainWindow/title_triangle.png</file>
+        <file>Resources/MainWindow/program.png</file>
+        <file>Resources/arrows.png</file>
+        <file>Resources/MainWindow/checkedHook.png</file>
+        <file>Resources/MainWindow/uncheckedHook.png</file>
+        <file>Resources/MainWindow/uncheckedStar.png</file>
+        <file>Resources/MainWindow/checkedStar.png</file>
+        <file>Resources/menu_close.png</file>
+        <file>Resources/menu_open.png</file>
+        <file>Resources/MainWindow/search_normal.png</file>
+        <file>Resources/MainWindow/search_hover.png</file>
+        <file>Resources/MainWindow/search_pressed.png</file>
+        <file>Resources/MainWindow/banner_special.png</file>
+        <file>Resources/MainWindow/banner_chemistry.png</file>
+        <file>Resources/MainWindow/banner_computer.png</file>
+        <file>Resources/MainWindow/banner_biology.png</file>
+        <file>Resources/MainWindow/banner_else.png</file>
+        <file>Resources/MainWindow/banner_medicine.png</file>
+        <file>Resources/MainWindow/warning.png</file>
+        <file>Resources/MainWindow/emoji_yawn.png</file>
+        <file>Resources/MainWindow/back.jpg</file>
+        <file>Resources/MainWindow/flush.jpg</file>
+        <file>Resources/MainWindow/send.jpg</file>
+    </qresource>
+</RCC>

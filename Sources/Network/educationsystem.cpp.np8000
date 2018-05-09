@@ -1,0 +1,751 @@
+#include "educationsystem.h"
+#include <QTimer>
+
+//和主界面直接由交互吗，不然就会需要重新登录
+/*500异常来自 javax.servlet.jsp.JspException: ServletException in '/WEB-INF/JSP/xk/inforReFresh.jsp':
+* 不是我想象中的内存不够导致session被替换，因为直接刷新还是我的名字
+* */
+
+// /xkAction.do?actionType=7 删除课程
+//给出提醒于收藏页 *:....，正选的时候调整选课优先级
+//全部课程   共152页 第1页
+//450 包  选课未成功信息  /xkAction.do?actionType=16
+//84包 kch=&kcm=&actionType=3&pageNumber=-1
+
+//81包 自由搜索  kch=&cxkxh=&kcm=&skjs=&kkxsjc=&skxq=&skjc=&pageNumber=-2&preActionType=1&actionType=5
+//无效参数：preActionType=3  kch=&cxkxh=&kcm=&skjs=&kkxsjc=&skxq=&skjc=&pageNumber=-2&actionType=5
+EducationSystem::EducationSystem(const QString u, const QString p, const QString s, const int b, const int e, const int add):\
+    m_BaseUrl("http://202.115.47.141"),m_username(u),m_password(p),m_semester(s), m_pCookieJar(new QNetworkCookieJar),
+    m_pageList(b, e, add), m_pQuery(new QSqlQuery(QSqlDatabase::database()))
+{
+    setCookieJar(m_pCookieJar);
+    m_request.setHeader(QNetworkRequest::UserAgentHeader, "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3053.3 Safari/537.36");
+    connect(this, SIGNAL(finished(QNetworkReply*)), this, SLOT(replyComplished(QNetworkReply*)), Qt::UniqueConnection);
+    SQLErrorDetect(m_pQuery,
+                "create table  if not exists ClassSchedule ("  //去除培养方案（全部都是自己专业的）
+                "Semester varchar,"         //学期
+                "Username varchar,"         //账号
+                "IfHas tinyint,"            //是否真实存在课表中（还是自己暂时添加的课程）
+                "CourseId varchar,"         //课程号
+                "CourseName varchar,"       //课程名字
+                "CourseAttribute varchar,"  //课程属性 任选 or 必修
+                "ClassId varchar,"          //课序号
+                "Credir varchar,"           //学分
+                "TypeofExam varchar,"       //考试类型 考试 or 考查 or 空着
+                "Teacher varchar,"          //教师
+                "WayofAttending varchar,"   //修读方式 正常 or 重修
+                "State varchar,"            //选课状态 拟选  抽中、置入、选中
+                "TeachingWeek varchar,"     //周次
+                "TeachingDay varchar,"      //星期
+                "TeachingSession varchar,"  //节次
+                "Campus varchar,"           //校区
+                "TeachingBuilding varchar," //教学楼
+                "TeachingRoom varchar )"    //教室
+                ,"创建课表数据库失败");
+    SQLErrorDetect(m_pQuery,
+                "create table  if not exists Courses (" //去除了、选课模式、选课控制
+                "Semester varchar,"         //学期
+                "IsSchoolPublicCourse tinyint," //判断是不是校公选
+                "IfSend tinyint,"            //判断是不是选择发送
+                "IfStar tinyint,"            //判断是不是选择收藏
+                "ProfessionofCourse varchar," //开课系
+                "CourseId varchar,"         //课程号
+                "CourseName varchar,"       //课程名字
+                "ClassId varchar,"          //课序号
+                "Credir varchar,"           //学分
+                "TypeofExam varchar,"       //考试类型 考试 or 考查 or 空着
+                "Teacher varchar,"          //教师
+                "ClassRemaining int,"       //课余量   只有这个是int
+                "ClassLimit varchar,"       //选课限制
+                "TeachingWeek varchar,"     //周次
+                "TeachingDay varchar,"      //星期
+                "TeachingSession varchar,"  //节次
+                "TeachingDuration varchar," //上课持续节数
+                "Campus varchar,"           //校区
+                "TeachingBuilding varchar," //教学楼
+                "TeachingRoom varchar )"    //教室
+                ,"创建公选课数据库失败");
+    SQLErrorDetect(m_pQuery,
+                "create table  if not exists Materials (" //教材信息
+                "Semester varchar,"         //学期
+                "Username varchar,"         //账号
+                "IfSend tinyint,"           //判断是不是选择发送
+                "BookeName varchar,"        //教材名字
+                "CourseName varchar )"      //对应的课程名字
+                ,"创建教材信息数据库失败");
+    SQLErrorDetect(m_pQuery,
+                "create table  if not exists Evaluation (" //评教信息
+                "Semester varchar,"         //学期
+                "Username varchar,"         //账号
+                "IfSend tinyint,"           //判断是不是选择发送（不发送、发送、已评 三种状态）
+                "Person varchar,"           //被评人名字
+                "Course varchar,"           //课程名字（评估内容）
+                "wjbm varchar,"             //问卷编码
+                "bpr varchar,"              //被评人系统内账号
+                "pgnr varchar)"             //评估编码，目前见到过两个909022020、304064030
+                ,"创建评教信息数据库失败");
+    SQLErrorDetect(m_pQuery,
+                "create table  if not exists  PlanCourses(" //方案课程
+                "Username varchar,"         //账号
+                "Attribute varchar,"        //课程属性：公选必修 专业基础必修  专业基础选修 专业必修  专业选修  实践必修  实践选修 跨专业选修 中华文化
+                "IfAttended tinyint,"       //是否上过课程
+                "CourseId varchar,"         //课程号
+                "CourseName varchar,"       //课程名字
+                "Credir varchar )"          //学分
+                ,"创建方案课程数据库失败");
+    SQLErrorDetect(m_pQuery,
+                "create table  if not exists Grades(" //方案课程
+                "Username varchar,"         //用户名
+                "IfChecked tinyint,"        //是否选中（进行绩点计算）
+                "Semester varchar,"         //学期，比如 2015-2016学年秋
+                "CourseId varchar,"         //课程号
+                "ClassId varchar,"          //课序号
+                "CourseName varchar,"       //课程名字
+                "Credir varchar,"           //学分
+                "Attribute varchar,"        //课程属性：必修、选修、任选
+                "Grade varchar,"            //成绩
+                "Reason varchar )"          //未通过原因
+                ,"创建成绩数据库失败");
+    SQLErrorDetect(m_pQuery,
+                "create table  if not exists Exams(" //考试
+                "Semester varchar,"         //学期
+                "Username varchar,"         //账号
+                "Attribute varchar,"         //考试名（属性）
+                "Campus varchar,"           //校区
+                "Building varchar,"         //教学楼
+                "Room varchar,"            //教室
+                "CourseName varchar,"       //课程名字
+                "Week varchar,"             //周次
+                "Day varchar,"              //星期
+                "Date varchar,"             //日期
+                "Time varchar,"             //时间
+                "PositionId varchar)"       //座位号
+                ,"创建考试信息数据库失败");
+    //通过一次login顺便判断是否网站支持访问，之后的函数执行之前都需要判断login是否成功了
+}
+
+
+//select rowid,* from Courses where  ProfessionofCourse="0" and TeachingWeek not like "%周%"
+void EducationSystem::tmpData(void) {
+    //先执行 update Courses set TeachingWeek=TeachingDay,TeachingDay=TeachingSession,TeachingSession=TeachingDuration,TeachingDuration=Campus,Campus=TeachingBuilding,TeachingBuilding=TeachingRoom,TeachingRoom="" where CourseId="0" and TeachingWeek not like '%周%';
+    if( SQLErrorDetect(m_pQuery, "select rowid,* from Courses where Semester='"+m_semester+"';", "in tmpData()") ) {
+        QString rowId,courseId,classId,professionofCourse,courseName,credir,typeofExam,teacher,classRemaining,classLimit;
+        if(m_pQuery->next()){
+            courseId =m_pQuery->value("CourseId").toString();
+            classId =m_pQuery->value("ClassId").toString();
+            professionofCourse = m_pQuery->value("ProfessionofCourse").toString();
+            courseName = m_pQuery->value("CourseName").toString();
+            credir = m_pQuery->value("Credir").toString();
+            typeofExam = m_pQuery->value("TypeofExam").toString();
+            teacher = m_pQuery->value("Teacher").toString();
+            classRemaining = m_pQuery->value("ClassRemaining").toString();
+            classLimit = m_pQuery->value("ClassLimit").toString();
+        }
+
+        while(m_pQuery->next()) {
+
+            if(m_pQuery->value("CourseId").toString() == "0") {
+                rowId = m_pQuery->value("rowid").toString();
+                QSqlQuery *pQuery= new QSqlQuery(QSqlDatabase::database());
+                pQuery->prepare("update Courses set  ProfessionofCourse=?,CourseId=?,CourseName=?,ClassId=?,Credir=?,TypeofExam=?,Teacher=?,ClassRemaining=?,ClassLimit=? where rowid="+rowId+" and Semester='"+m_semester+"';");
+                pQuery->addBindValue(professionofCourse);
+                pQuery->addBindValue(courseId);
+                pQuery->addBindValue(courseName);
+                pQuery->addBindValue(classId);
+                pQuery->addBindValue(credir);
+                pQuery->addBindValue(typeofExam);
+                pQuery->addBindValue(teacher);
+                pQuery->addBindValue(classRemaining);
+                pQuery->addBindValue(classLimit);
+                SQLErrorDetectForPrepare(pQuery, "in tmpData()");
+            }else {
+                courseId =m_pQuery->value("CourseId").toString();
+                classId =m_pQuery->value("ClassId").toString();
+                professionofCourse = m_pQuery->value("ProfessionofCourse").toString();
+                courseName = m_pQuery->value("CourseName").toString();
+                credir = m_pQuery->value("Credir").toString();
+                typeofExam = m_pQuery->value("TypeofExam").toString();
+                teacher = m_pQuery->value("Teacher").toString();
+                classRemaining = m_pQuery->value("ClassRemaining").toString();
+                classLimit = m_pQuery->value("ClassLimit").toString();
+            }
+        }
+    }
+}
+
+
+//使用了查课接口。爬虫居然会导致部分数据错位，ProfessionofCourse=" "
+void EducationSystem::repairData(void) {
+    login();
+    if(m_accessible==false) {
+        qDebug() << "成功阻止网络行为的进行";
+        return;
+    }
+
+    if( SQLErrorDetect(m_pQuery, "select * from Courses where  TeachingRoom='' and Semester='"+m_semester+"';", "探测课程数据表size失败 in repairData()") ) {
+        QByteArray data;
+        data.append("pageSize=10000\
+&showColumn=kkxsjc%23%BF%AA%BF%CE%CF%B5\
+&showColumn=kch%23%BF%CE%B3%CC%BA%C5\
+&showColumn=kcm%23%BF%CE%B3%CC%C3%FB\
+&showColumn=kxh%23%BF%CE%D0%F2%BA%C5\
+&showColumn=xf%23%D1%A7%B7%D6\
+&showColumn=kslxmc%23%BF%BC%CA%D4%C0%E0%D0%CD\
+&showColumn=skjs%23%BD%CC%CA%A6\
+&showColumn=bkskrl%23%BF%CE%C8%DD%C1%BF\
+&showColumn=xkxzsm%23%D1%A1%BF%CE%CF%DE%D6%C6%CB%B5%C3%F7\
+&showColumn=zcsm%23%D6%DC%B4%CE\
+&showColumn=skxq%23%D0%C7%C6%DA\
+&showColumn=skjc%23%BD%DA%B4%CE\
+&showColumn=xqm%23%D0%A3%C7%F8\
+&showColumn=jxlm%23%BD%CC%D1%A7%C2%A5\
+&showColumn=jasm%23%BD%CC%CA%D2\
+&pageNumber=0\
+&actionType=1");
+
+        QSqlQuery *pQuery= new QSqlQuery(QSqlDatabase::database());
+        while(m_pQuery->next()) {
+            QString courseId =m_pQuery->value("CourseId").toString();
+            QString classId =m_pQuery->value("ClassId").toString();
+            QString teachingWeek =m_pQuery->value("TeachingWeek").toString();
+            QString teachingDay =m_pQuery->value("TeachingDay").toString();
+            QString teacher =m_pQuery->value("Teacher").toString();
+
+            m_request.setUrl(QUrl(m_BaseUrl+"/courseSearchAction.do?kch="+courseId));
+            QNetworkReply *pReply = post(m_request, data);
+
+
+            connect(pReply,&QNetworkReply::readyRead,this,[=](){
+                QString str =gbk->toUnicode(pReply->readAll());
+
+                QList<QString> firstResult =findAll(str, "<tr class=(\")?odd(\")? onMouseOut=(\")?this.className='even';(\")? onMouseOver=(\")?this.className='evenfocus';(\")?>(.*)</tr>", 7, "(&nbsp|[; \r\n\t]|<td align=(\")?center(\")?>.*</td>)");
+
+                for(auto extract : firstResult) {
+                    QList<QString> endResult =findAll(extract, "<td.*>(.*)</td>", 1);
+                    endResult.insert(12, QString::number(endResult.at(11).toLatin1()[2]-endResult.at(11).toLatin1()[0]+1));
+
+                    qDebug() << endResult ;
+                    if(endResult.at(9)==teachingWeek && endResult.at(10)==teachingDay && endResult.at(6)==teacher) {
+                        pQuery->prepare("update Courses  set ProfessionofCourse=?,CourseId=?,CourseName=?,ClassId=?,Credir=?,TypeofExam=?,Teacher=?,ClassRemaining=?,ClassLimit=?,TeachingWeek=?,TeachingDay=?,TeachingSession=?,TeachingDuration=?,Campus=?,TeachingBuilding=?,TeachingRoom=?  where CourseId=\'"+courseId+"\' and ClassId=\'"+classId+"\' and TeachingWeek=\'"+teachingWeek+"\' and TeachingDay=\'"+teachingDay+"\' and Teacher=\'"+teacher+"\' and Semester='"+m_semester+"';");
+
+                        for(int i1=0;i1<endResult.size();++i1)  //对size进行一个判断
+                            pQuery->addBindValue(endResult.at(i1));
+
+                        SQLErrorDetectForPrepare(pQuery, "修复课程数据执行失败 in repairData()");
+                    }
+                }
+
+            });
+            QEventLoop loop;
+            connect(pReply, SIGNAL(finished()), &loop, SLOT(quit()));
+            loop.exec();
+        }
+
+        pQuery->clear();
+    }
+}
+
+
+EducationSystem::~EducationSystem(void) {
+    delete m_pQuery;
+    delete m_pCookieJar;
+
+}
+
+
+QString EducationSystem::getSemester(void) {
+    return m_semester;
+}
+
+QString EducationSystem::getUsername(void) {
+    return m_username;
+}
+
+
+
+//MainWindow的构造函数中执行了这个测试函数
+void EducationSystem::init(void) {
+//    getGrades();
+//    getExamInfo(false);
+//    getClassSchedule(true);
+//    getPlanCourses();
+
+//    QFile htmlFile("test.txt"); htmlFile.open(QIODevice::ReadOnly | QIODevice::Text);
+//    QString str=(QString)htmlFile.readAll();
+//    recordAllCourses(str);
+    if( login() ) {//因为是同步，所以如果万一网页反应了，程序就会卡着，这里应该进入动画并设置计时（封装成一个函数）
+        //account handle
+        SQLErrorDetect(m_pQuery, "select * from Users where Username='"+m_username+"'", "用户名匹配超找失败");
+        if( !m_pQuery->next() ) {
+            SQLErrorDetect(m_pQuery,"insert into Users values('"+m_username+"','"+m_password+"','"+m_semester+"',1)", "增加用户账户记录失败");
+        }else {
+            SQLErrorDetect(m_pQuery,"update Users set Password='"+m_password+"',Semester='"+m_semester+"',Frequence=Frequence+1 where Username='"+m_username+"'", "跟新用户账户数据失败");
+        }
+        //information handle
+        getClassSchedule(false);
+        getPlanCourses(false);
+        getExamInfo(false);
+        getGrades();
+        logout();
+    }else
+        qDebug() << "login invalid";
+}
+
+
+bool EducationSystem::login(void) {
+    m_accessible =true;
+    m_request.setUrl(QUrl(m_BaseUrl+"/loginAction.do"));
+    QByteArray data;
+    data.append("zjh="+m_username);
+    data.append("&mm="+m_password);
+
+    QNetworkReply *pReply = post(m_request, data);
+    QEventLoop loop;
+    connect(pReply, SIGNAL(finished()), &loop, SLOT(quit()));
+
+
+    QTimer *timer = new QTimer();
+    connect( timer, SIGNAL(timeout()), &loop, SLOT(quit()) );
+    connect( timer, SIGNAL(timeout()), this, SLOT(setUnaccessible()) );
+    timer->start( 5000 ); // 5秒单触发定时器
+
+    loop.exec();
+    int size=pReply->readAll().size();
+
+    return size<1000;
+}
+
+void EducationSystem::logout(void) {
+    m_request.setUrl(QUrl(m_BaseUrl+"/logout.do"));
+    QByteArray data;
+    data.append("loginType=platformLogin");
+
+    QNetworkReply *pReply = post(m_request, data);
+    QEventLoop loop;
+    connect(pReply, SIGNAL(finished()), &loop, SLOT(quit()));
+    loop.exec();
+    return;
+}
+
+//获取课表。force 控制强制刷新
+void EducationSystem::getClassSchedule(const bool force) {
+    qDebug() << "enter getClassSchedule";
+    m_request.setUrl(QUrl(m_BaseUrl+"/xkAction.do?actionType=6"));
+    if( force==true && SQLErrorDetect(m_pQuery, "delete from ClassSchedule where Semester='"+m_semester+"' and Username='"+m_username+"';", "删除课程表数据失败 in getClassSchedule()") ) {
+        get(m_request);
+        return;
+    }else {
+        if( SQLErrorDetect(m_pQuery, "select count(*) from ClassSchedule where Semester='"+m_semester+"' and Username='"+m_username+"';", "探测课程数据表size失败 in getClassSchedule()") ) {
+            m_pQuery->next();
+            if(m_pQuery->value(0).toInt()==0 )
+                get(m_request);
+        }
+    }
+}
+
+
+//记录课表
+bool EducationSystem::recordClassSchedule(QString &str){
+    QList<QString> firstResult =findAll(str, "<tr class=(\")?odd(\")? onMouseOut=(\")?this.className='even';(\")? onMouseOver=(\")?this.className='evenfocus';(\")?>(.*)</tr>", 7, "(&nbsp;|[ \r\n\t]|<td rowspan=(\")?\\d(\")? align=(\")?center(\")?>.*</td>|<td rowspan=(\")?\\d(\")? >.*方案</td>)");
+    if( firstResult.size()==0 ) return false;
+    for(auto extract : firstResult) {
+        m_pQuery->prepare("insert into ClassSchedule values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+        m_pQuery->bindValue(0,m_semester);
+        m_pQuery->bindValue(1,m_username);
+        m_pQuery->bindValue(2,1);
+        QList<QString> endResult =findAll(extract, "<td.*>(.*)</td>", 1);
+        int size =endResult.size();
+        for(int i1=0;i1<size;++i1)  //对size进行一个判断
+            if(size==15)
+                switch(i1){  //我的显示view对jwc的显示view在顺序上进行了一定的调整
+                    case 2: //课序号 字段映射
+                        m_pQuery->bindValue(6,endResult.at(i1));
+                        break;
+                    case 3: //学分 字段映射
+                        m_pQuery->bindValue(7,endResult.at(i1));
+                        break;
+                    case 4://课程属性 任选 or 必修 字段映射
+                        m_pQuery->bindValue(5,endResult.at(i1));
+                        break;
+                    default:
+                        m_pQuery->bindValue(i1+3,endResult.at(i1));
+                }
+            else if(size>15){//对jwc 显示view中多行课程的处理
+                m_pQuery->bindValue(i1+18-size,endResult.at(i1));
+            }else {
+                ;
+            }
+        SQLErrorDetectForPrepare(m_pQuery, "插入课程表数据执行失败 in recordClassSchedule()");
+    }
+    m_pQuery->clear();
+
+    return true;
+}
+
+
+
+
+void EducationSystem::getGrades(void) {
+    qDebug() << "getGrades";
+    m_request.setUrl(QUrl(m_BaseUrl+"/gradeLnAllAction.do?type=ln&oper=qbinfo"));
+    get(m_request);
+}
+void EducationSystem::recordGrades(QString str) {
+    qDebug() << "enter recordGrades";
+    QStringList strList = str.split("<a name="),semesterList;
+    SQLErrorDetect(m_pQuery, "select Semester from Grades where Username='"+m_username+"' group by Semester;", "获取Grades中所有的Semester");
+    while( m_pQuery->next() )
+        semesterList.append(m_pQuery->value(0).toString());
+    for(int i1=1; i1<strList.size(); ++i1) {
+        QString semester = strList[i1].mid(1,12);
+        if( !semesterList.contains(semester) ){
+            QList<QString> firstResult = findAll(strList[i1], "<tr class=(\")?odd(\")? onMouseOut=(\")?this.className='even';(\")? onMouseOver=(\")?this.className='evenfocus';(\")?>(.*)</tr>", 7, "(&nbsp|[;\r\n\t])");
+            for( auto sTmp : firstResult ) {
+                QList<QString> endResult =findAll(sTmp, "<td align=(\")?center(\")?>(.*)</td>", 3, "<p align=(\")?center(\")?>|</P>|[ \r\n\t]");
+                endResult.removeAt(3);
+                m_pQuery->prepare("insert into Grades values(?,?,?,?,?,?,?,?,?,?)");
+                m_pQuery->addBindValue(m_username);
+                m_pQuery->addBindValue(0);
+                m_pQuery->addBindValue(semester);
+                for( auto str : endResult )
+                    m_pQuery->addBindValue(str);
+                if(endResult.size()==5) m_pQuery->addBindValue(""); //有时候部分课程成绩还没有显示出来
+                if(endResult.size()==6) m_pQuery->addBindValue("");
+
+                SQLErrorDetectForPrepare(m_pQuery, "插入成绩表数据执行失败 in recordGrades(QString str)");
+            }
+        }else {
+            continue;
+        }
+    }
+
+}
+
+
+//如果是查看自己的学情况：/gradeLnAllAction.do?type=ln&oper=lnfaqkxx&fajhh=2806
+void EducationSystem::getPlanCourses(const bool force) {
+    qDebug() << "getPlanCourses";
+    m_request.setUrl(QUrl(m_BaseUrl+"/gradeLnAllAction.do?type=ln&oper=lnfaqk&flag=zx"));
+    if( force==true && SQLErrorDetect(m_pQuery, "delete from PlanCourses where Username='"+m_username+"';", "删除课程表数据失败 in getClassSchedule()") ) {
+        get(m_request);
+        return;
+    }else {
+        if( SQLErrorDetect(m_pQuery, "select count(*) from PlanCourses where Username='"+m_username+"';", "探测课程数据表size失败 in getPlanCourses()") ) {
+            m_pQuery->next();
+            if(m_pQuery->value(0).toInt()==0 )
+                get(m_request);
+        }
+    }
+}
+void EducationSystem::recordPlanCourses(QString str) {
+    str =findAll(str,"tree\\.config\\.useCookies=false;(.*)document.write\\(tree\\);", 1, "[\r\n\t]|<!--(.*)-->")[0];
+    QString attribute="";
+    for(auto firstResult : str.split(QRegExp("(\\);)?tree.add\\("),QString::SkipEmptyParts) ) {
+        QString information =firstResult.split("'")[1];
+        if(information.left(1)=="[") {//格式：[304112010]新生研讨课[1](必修,88.0(2016-01-14))
+            QStringList result = information.split(QRegExp("\\[|\\]"),QString::SkipEmptyParts);
+            int ifAttended =result.size()>2;
+            if(ifAttended==1)
+                SQLErrorDetect(m_pQuery,"insert into PlanCourses values('"+m_username+"',"
+                               "'"+attribute+"',"                   //Attribute
+                               +QString::number(ifAttended)+"," //IfAttended
+                               "'"+result[0]+"',"                   //CourseId
+                               "'"+result[1]+"',"                   //CourseName
+                               "'"+result[2]+"')",                  //Credir
+                               "插入PlanCourses失败 in EducationSystem::recordPlanCourses(QString str)");
+            else
+                SQLErrorDetect(m_pQuery,"insert into PlanCourses values('"+m_username+"',"
+                               "'"+attribute+"',"                   //Attribute
+                               +QString::number(ifAttended)+"," //IfAttended
+                               "'"+result[0]+"',"                   //CourseId
+                               "'"+result[1]+"',"                   //CourseName
+                               "'')",                           //Credir
+                               "插入PlanCourses失败 in EducationSystem::recordPlanCourses(QString str)");
+        }else { //格式：公共课(最低修读学分:33,通过学分:31.0,已修课程门数:22,已通过课程门数:22,未通过课程门数:0)
+            QString str =information.split("(")[0];
+            if(str=="必修" || str=="选修")
+                attribute +=str;
+            else
+                attribute =str;
+        }
+    }
+
+
+}
+
+
+//获取学校开放的选课
+void EducationSystem::getCourses(int actionType) {
+    QString url =m_BaseUrl+"/xkAction.do?actionType="+QString::number(actionType)+"&pageNumber=";
+    while(!m_pageList.isEmpty()) {
+        int num=m_pageList.getPageNumber();
+        if( num==-1 ){//访问一轮链表结束以后，暂停1.5s左右
+            sleep(1500);
+            continue;
+        }
+        m_request.setUrl( QUrl(url+QString::number(num, 10)) );
+        get(m_request);
+    }
+    qDebug() << "获取方案课程的一个指定范围获取结束";
+}
+
+
+//获取全部课程
+void EducationSystem::getAllCourses(void) {
+
+    //需要发一个探测是否开着选课的包，并通过这个包的返回进行判断是否继续?
+     QString url=m_BaseUrl+"/xkAction.do?actionType=5&kch=&cxkxh=&kcm=&skjs=&kkxsjc=&skxq=&skjc=&pageNumber=-2";
+     m_request.setUrl(url);
+     get(m_request);
+
+
+   for(int i1=1;i1<153;++i1) {
+       url =m_BaseUrl+"/xkAction.do?actionType=5&pageNumber="+QString::number(i1);
+       m_request.setUrl(url);
+       get(m_request);
+//       QNetworkReply *pReply = get(m_request);
+//       QEventLoop loop;
+//       connect(this, SIGNAL(my()), &loop, SLOT(quit()));
+//       loop.exec();
+
+   }
+}
+
+
+//记录全部课程
+void EducationSystem::recordAllCourses(QString &str) {
+    qDebug() << "enter recordAllCourses()";
+
+    QList<QString> firstResult =findAll(str, "<tr class=(\")?odd(\")? onMouseOut=(\")?this.className='even';(\")? onMouseOver=(\")?this.className='evenfocus';(\")?>(.*)</tr>", 7, "(&nbsp|[; \r\n\t]|<td rowspan=(\")?\\d(\")? align=(\")?center(\")?>.*<input.*</td>|</?a.*>|</?div.*>|</?span.*>)");
+    for(auto extract : firstResult) {
+        m_pQuery->prepare("insert into Courses values(?,0,0,0,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+        m_pQuery->addBindValue(m_semester);
+        QList<QString> endResult =findAll(extract, "<td.*>(.*)</td>", 1);
+        for(int i1=0;i1<endResult.size();++i1)  //对size进行一个判断
+            if(i1<17) {
+                switch(i1){  //我的显示view对jwc的显示view在顺序上进行了一定的调整
+                    case 8: //略过 选课模式
+                    case 9: //略过 选课控制
+                        continue;
+                    default:
+                    m_pQuery->addBindValue(endResult.at(i1));
+                }
+            }else if(i1==17 || i1==24 || i1==31){
+                m_pQuery->addBindValue(endResult.at(i1));
+                SQLErrorDetectForPrepare(m_pQuery, "插入课程表数据执行失败 in recordAllCourses()");
+                m_pQuery->prepare("insert into Courses values(?,0,0,0,0,0,0,0,0,0,0,0,0,?,?,?,?,?,?,?)");
+                m_pQuery->addBindValue(m_semester);
+            }else {
+                m_pQuery->addBindValue(endResult.at(i1));
+            }
+    }
+    m_pQuery->clear();
+//    emit my();
+}
+
+
+//获取校公选
+void EducationSystem::getSchoolPublicElectiveCourses(void) {
+//    getCourses(3);//actionType=3&pageNumber=1
+    login();
+    for(int i1=1;i1<10;++i1) {
+        QString url=m_BaseUrl+"/xkAction.do?actionType=3&pageNumber="+QString::number(i1);
+        m_request.setUrl(url);
+
+        get(m_request);
+    }
+}
+
+
+//记录校公选
+void EducationSystem::recordSchoolPublicElectiveCourses(QString &str) {
+    qDebug() << "enter recordSchoolPublicElectiveCourses()";
+    QList<QString> firstResult =findAll(str, "<tr class=(\")?odd(\")? onMouseOut=(\")?this.className='even';(\")? onMouseOver=(\")?this.className='evenfocus';(\")?>(.*)</tr>", 7, "(&nbsp;|[ \r\n\t])");
+    for(auto extract : firstResult) {
+        m_pQuery->prepare("update Courses set IsSchoolPublicCourse=1 where CourseId=? and ClassId=? and Semester='"+m_semester+"';");
+        QList<QString> endResult =findAll(extract, "<td.*>(.*)</td>", 1);
+        m_pQuery->bindValue(0,endResult[2]);
+        m_pQuery->bindValue(1,endResult[4]);
+        qDebug() << endResult[2] << " " << endResult[4];
+        SQLErrorDetectForPrepare(m_pQuery, "插入课程表数据执行失败 in recordAllCourses()");
+    }
+    m_pQuery->clear();
+}
+
+
+
+
+void EducationSystem::sendSelectClassInfo(void) {
+    m_request.setUrl(QUrl(m_BaseUrl+"/jxpgXsAction.do"));
+
+
+}
+
+
+
+void EducationSystem::getEvaluateInfo(const bool force) {
+    m_request.setUrl(QUrl(m_BaseUrl+"/jxpgXsAction.do?oper=listWj&pageSize=1"));
+    get(m_request);
+}
+void EducationSystem::recordEvaluateInfo(QString &str) {
+    qDebug() << "recordEvaluateInfo";
+    QList<QString> firstResult =findAll(str, "<tr class=(\")?odd(\")? onMouseOut=(\")?this.className='even';(\")?(\\s)*onMouseOver=(\")?this.className='evenfocus';(\")?>(.*)</tr>", 8, "(&nbsp;|[\r\n\t])");
+    qDebug() << firstResult;
+    for(auto extract : firstResult ){
+//        QList<QString> result =findAll(extract, "<td.*>(.*)</td>", 1);
+
+
+
+    }
+}
+
+void EducationSystem::sendEvaluateInfo(void) {
+//    QMessageBox::information(nullptr, "告知", "评教系统还没有开启！");
+    m_request.setUrl(QUrl(m_BaseUrl+"/jxpgXsAction.do?oper=wjpg"));
+    get(m_request);
+
+}
+
+
+
+
+void EducationSystem::getExamInfo(const bool force) {
+    m_request.setUrl(QUrl(m_BaseUrl+"/ksApCxAction.do?oper=getKsapXx"));
+    if( force==true && SQLErrorDetect(m_pQuery, "delete from Exams where Semester='"+m_semester+"' and Username='"+m_username+"';", "删除考试安排表数据失败 in getClassSchedule()") ) {
+        get(m_request);
+        return;
+    }else {
+        if( SQLErrorDetect(m_pQuery, "select count(*) from Exams where Semester='"+m_semester+"' and Username='"+m_username+"';", "探测考试安排表size失败 in getClassSchedule()") ) {
+            if( m_pQuery->next() && m_pQuery->value(0).toInt()==0 )
+                get(m_request);
+        }
+    }
+}
+
+bool EducationSystem::recordExamInfo(QString &str) {
+    qDebug() << "recordExamInfo";
+    QList<QString> firstResult =findAll(str, "<tr class=(\")?odd(\")?>(.*)</tr>", 3, "(&nbsp;|[ \r\n\t])");
+    if( firstResult.size()==0 ) return false;
+    for(auto extract : firstResult) {
+        QList<QString> endResult =findAll(extract, "<td.*>(.*)</td>", 1);
+        endResult.removeLast();
+        endResult.removeLast();
+        m_pQuery->prepare("insert into Exams values(?,?,?,?,?,?,?,?,?,?,?,?)");
+        m_pQuery->addBindValue(m_semester);
+        m_pQuery->addBindValue(m_username);
+        for(auto value : endResult)
+            m_pQuery->addBindValue(value);
+        SQLErrorDetectForPrepare(m_pQuery, "数据插入成绩表执行失败 in recordExamInfo()");
+    }
+    return true;
+}
+
+void EducationSystem::setUnaccessible(void) {
+    m_accessible =false;
+}
+
+
+
+//对于大包不友好
+void EducationSystem::replyComplished(QNetworkReply *pReply){
+    QNetworkRequest request =pReply->request();
+    QString str =gbk->toUnicode(pReply->readAll());
+
+    int size =str.size();
+    qDebug() << "获得到来自"+pReply->request().url().toString()+"的正常的请求的响应";
+    if( size<10000 && str.contains("对不起、非选课阶段不允许选课") ){
+        qDebug() << "非选课时间段，需要不断探查";
+        if(!m_pageList.isEmpty())
+            m_pageList.clear();
+    }else if( size<10000 && str.contains("<font color=\"#990000\">请您登录后再使用</font>")) { //这里应进行访问其他网址的优化处理，这一点和500错误的处理是一样的
+        //handleError(request);   test：刷新访问loginActino.do重新激活
+        logout();
+        login();
+        get(request);
+        qDebug() << "已经完成重新登录！";
+    }else if( size<10000 && str.contains("<h1>500 Servlet Exception</h1>")) {
+        handleError(request);
+        qDebug() << "已经完成对500 Servlet Exception的处理！";
+    }else if( size<10000 && str.contains("<font color=\"#990000\">没有完成评估,不能查看课表信息!</font>") ) {
+        QMessageBox::information(nullptr, "告知","没有完成教学评估,不能获取课表、成绩信息!");
+    }else if( size<10000 && str.contains("<font color=\"#990000\">数据库忙请稍候再试</font>") ) {
+        handleError(request);
+        qDebug() << "已完成对数据库忙的处理";
+    }else  {
+        QString url= pReply->request().url().toString();
+        if(url.contains("/xkAction.do?actionType=")){
+            QChar chActionType =url.at(45);
+            if(url.size()>58) {
+                //接收返回的包的顺序是不定的，两种思路，1.自己分析网页下方的页数，然后进行记录； 2.通过发包进行判断是否内容重复，打算直接在数据库记录的时候进行匹配
+                QString strPageNum =url.mid(58);
+                qDebug() <<  "page:"+strPageNum;
+                m_pageList.delPageNumber(strPageNum.toInt());
+                if(m_pageList.isEmpty()) m_pageList.supply();
+            }
+            switch(chActionType.digitValue()) {
+                case 3:
+                    recordSchoolPublicElectiveCourses(str);
+                    break;
+                case 5:
+                    recordAllCourses(str);
+                    break;
+                case 6:
+                    if( recordClassSchedule(str) ) emit haveFlushClassSchedule();
+                    break;
+                default:
+                    ;
+            }
+        }else if(url.contains("/ksApCxAction.do?oper=getKsapXx")){
+            if( recordExamInfo(str) ) emit haveFlushExamInfo();
+        }else if(url.contains("/gradeLnAllAction.do?type=ln&oper=qbinfo")){
+            recordGrades(str);
+            emit haveFlushGrades();
+        }else if(url.contains("/gradeLnAllAction.do?type=ln&oper=lnfaqk&flag=zx")){
+            recordPlanCourses(str);
+        }else if(url.contains("/jxpgXsAction.do")){
+            recordEvaluateInfo(str);
+            emit haveFlushEvaluation();
+        }
+    }
+    pReply->deleteLater();
+}
+
+//这个函数需要进行static 记录，不然就会一直触发这个函数，到达上限的时候就会进行返回，然后我就判断返回值，进行下一步的考虑
+//处理500ServerError（除了login和logout函数） 传入error code
+void EducationSystem::handleError(QNetworkRequest request) {
+sleep(1000);
+    //函数处理并不是很满意，遇到过一次死循环
+    //先通过看访问课表、页面的结果来判断是不是真的需要进行
+//    m_request.setUrl(QUrl(m_BaseUrl+"/xkAction.do?actionType=6"));
+//    QNetworkReply *pReply = get(m_request);
+//        并且并不调用record函数，这个实现失败了
+//    connect(pReply,&QNetworkReply::finished,this,[=](){
+//          qDebug() << gbk->toUnicode(pReply->readAll());
+//          //pReply->deleteLater();
+
+//    });
+//    sleep(2000);
+    login();
+    get(request);
+
+
+}
+
+
+void EducationSystem::handleFlushClassSchedule() {
+    getClassSchedule(true);
+}
+
+
+void EducationSystem::handleFlushExamInfo() {
+    getExamInfo(true);
+}
+
+
+void EducationSystem::handleFlushEvaluation() {
+    getEvaluateInfo(true);
+}
+
+void EducationSystem::handleFlushGrades() {
+    getGrades();
+}

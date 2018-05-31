@@ -30,6 +30,7 @@
    <string notr="true">#LoginWindow {
 	image: url(:/Resources/LoginWindow/login_title.png);
 	image-position:TOP;
+	background-color:white;
 }</string>
   </property>
   <widget class="QWidget" name="layoutWidget">

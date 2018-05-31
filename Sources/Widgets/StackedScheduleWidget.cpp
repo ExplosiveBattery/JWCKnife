@@ -16,6 +16,7 @@ StackedScheduleWidget::StackedScheduleWidget(QWidget *parent) :
     m_font.setPointSize(12);
     //界面设置
     ui->setupUi(this);
+    ui->tableWidget_schedule_courses->setCornerButtonEnabled(false);
     ui->tableWidget_schedule_courses->setRowCount(12);
     ui->tableWidget_schedule_courses->setColumnCount(7);
     QStringList horizontalHeader_schedule{"周一","周二","周三","周四","周五","周六", "周日"};

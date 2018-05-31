@@ -1,8 +1,12 @@
 # JWCKnife
+
 ### Introduction
+
 四川大学本科教务系统（URP系统）在访问量较大的时候很容易出现500 Servlet Error，体验很不友好  
 于是想做一个本地端的应用（可以最小化到后台），具有本科教务系统中的大部分功能，通过本地端缓存，在减小教务系统压力的同时方便自己.....emmmm.....支持自动选课  
-[![Watch the video](https://github.com/ExplosiveBattery/JWCKnife/blob/master/README/video_screenshot.png?raw=true)](https://youtu.be/qb3fSluCN9Q)
+[![Watch the video](https://github.com/ExplosiveBattery/JWCKnife/blob/master/README/video_screenshot.png?raw=true)](https://youtu.be/qb3fSluCN9Q)  
+后来我发现右下角的图片背景色是一个个格子...这个问题在我开发的电脑上没有表现出来，这是加入到项目中图片的原因，只需要替换成正常的图片即可  
+
 ### General code structure description
 
 <pre>
